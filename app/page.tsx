@@ -53,12 +53,23 @@ export default function Home() {
   const handleGetStarted = async (priceId?: string) => {
     setIsLoading(true);
     try {
+      // Get metadata from local storage
+      const storedMetadata = localStorage.getItem('user_metadata');
+      let metadata = null;
+      if (storedMetadata) {
+        try {
+          metadata = JSON.parse(storedMetadata);
+        } catch (error) {
+          console.error('Error parsing metadata:', error);
+        }
+      }
+
       const response = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ priceId }),
+        body: JSON.stringify({ priceId, metadata }),
       });
 
       const data = await response.json();
@@ -131,6 +142,20 @@ export default function Home() {
                 className="text-gray-700 hover:text-primary-600 transition-all duration-300 font-medium relative group"
               >
                 Testimonials
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <Link 
+                href="/setup" 
+                className="text-gray-700 hover:text-primary-600 transition-all duration-300 font-medium relative group"
+              >
+                Setup
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
+              </Link>
+              <Link 
+                href="/refund" 
+                className="text-gray-700 hover:text-primary-600 transition-all duration-300 font-medium relative group"
+              >
+                Refund
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-600 transition-all duration-300 group-hover:w-full"></span>
               </Link>
             </div>

@@ -13,6 +13,9 @@ function SuccessContent() {
 
   useEffect(() => {
     if (sessionId) {
+      // Save session ID to local storage
+      localStorage.setItem('latest_session_id', sessionId);
+      
       fetch(`/api/verify-session?session_id=${sessionId}`)
         .then((res) => res.json())
         .then((data) => {
@@ -144,6 +147,14 @@ function SuccessContent() {
             </span>
             <div className="absolute inset-0 shimmer-effect"></div>
           </Link>
+          {sessionId && (
+            <Link
+              href={`/refund?session_id=${sessionId}`}
+              className="px-10 py-4 rounded-2xl font-bold text-lg text-orange-600 bg-white border-2 border-orange-600 hover:bg-orange-50 transition-all duration-300 hover-lift"
+            >
+              Request Refund
+            </Link>
+          )}
           <Link
             href="/"
             className="px-10 py-4 rounded-2xl font-bold text-lg text-primary-600 bg-white border-2 border-primary-600 hover:bg-primary-50 transition-all duration-300 hover-lift"
