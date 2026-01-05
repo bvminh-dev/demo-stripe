@@ -37,6 +37,24 @@ export async function POST(request: NextRequest) {
           },
         ];
 
+    // Prepare metadata for both session and payment intent
+    const sessionMetadata: Record<string, string> = {
+      product: "GlowUp Premium",
+    };
+    const paymentIntentMetadata: Record<string, string> = {
+      product: "GlowUp Premium",
+    };
+
+    if (userMetadata?.userId) {
+      sessionMetadata.UserId = userMetadata.userId;
+      paymentIntentMetadata.UserId = userMetadata.userId;
+    }
+    if (userMetadata?.creditGranted) {
+      sessionMetadata.CreditGranted = userMetadata.creditGranted.toString();
+      paymentIntentMetadata.CreditGranted =
+        userMetadata.creditGranted.toString();
+    }
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
@@ -49,12 +67,9 @@ export async function POST(request: NextRequest) {
       allow_promotion_codes: true,
       billing_address_collection: "auto",
       customer_email: undefined, // Will be collected during checkout
-      metadata: {
-        product: "GlowUp Premium",
-        ...(userMetadata?.userId && { UserId: userMetadata.userId }),
-        ...(userMetadata?.creditGranted && {
-          CreditGranted: userMetadata.creditGranted.toString(),
-        }),
+      metadata: sessionMetadata,
+      payment_intent_data: {
+        metadata: paymentIntentMetadata,
       },
     });
 
