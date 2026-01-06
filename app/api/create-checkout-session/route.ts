@@ -7,8 +7,11 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const { priceId: requestPriceId, metadata: userMetadata } =
-      await request.json();
+    const {
+      priceId: requestPriceId,
+      metadata: userMetadata,
+      locale,
+    } = await request.json();
 
     // Use priceId from request, environment variable, or inline pricing
     const priceId = requestPriceId || process.env.NEXT_PUBLIC_STRIPE_PRICE_ID;
@@ -71,6 +74,7 @@ export async function POST(request: NextRequest) {
       payment_intent_data: {
         metadata: paymentIntentMetadata,
       },
+      locale: locale || userMetadata?.locale || "en",
     });
 
     return NextResponse.json({ url: session.url });

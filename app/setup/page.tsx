@@ -6,6 +6,7 @@ import Link from "next/link";
 interface UserMetadata {
   userId: string;
   creditGranted: number;
+  locale: string;
 }
 
 const STORAGE_KEY = "user_metadata";
@@ -14,6 +15,7 @@ export default function SetupPage() {
   const [metadata, setMetadata] = useState<UserMetadata>({
     userId: "",
     creditGranted: 0,
+    locale: "en",
   });
   const [isSaved, setIsSaved] = useState(false);
 
@@ -69,6 +71,11 @@ export default function SetupPage() {
   ) => {
     const value = parseInt(e.target.value, 10) || 0;
     setMetadata((prev) => ({ ...prev, creditGranted: value }));
+    setIsSaved(false);
+  };
+
+  const handleLocaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMetadata((prev) => ({ ...prev, locale: e.target.value }));
     setIsSaved(false);
   };
 
@@ -184,6 +191,34 @@ export default function SetupPage() {
                   </span>
                 </p>
               )}
+            </div>
+
+            {/* Locale Field */}
+            <div className="mb-8">
+              <label
+                htmlFor="locale"
+                className="block text-lg font-semibold text-gray-900 mb-3"
+              >
+                Locale
+              </label>
+              <input
+                id="locale"
+                type="text"
+                value={metadata.locale}
+                onChange={handleLocaleChange}
+                placeholder="Enter locale code (e.g., en, th, vi, ja, ko, zh, fr, de, es, pt, it, nl, pl, ru, id, ms, tr, auto)"
+                className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-primary-600 focus:outline-none transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm text-lg font-semibold"
+              />
+              {metadata.locale && (
+                <p className="mt-2 text-sm text-gray-500">
+                  Current locale:{" "}
+                  <span className="font-semibold">{metadata.locale}</span>
+                </p>
+              )}
+              <p className="mt-2 text-xs text-gray-400">
+                Common values: auto, en, th, vi, ja, ko, zh, zh-TW, fr, de, es,
+                pt, pt-BR, it, nl, pl, ru, id, ms, tr
+              </p>
             </div>
 
             {/* Save Button */}
