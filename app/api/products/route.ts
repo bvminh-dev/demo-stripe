@@ -19,42 +19,69 @@ export async function GET() {
       expand: ['data.product'],
     });
 
-    // Combine products with their prices
-    const productsWithPrices = products.data.map((product) => {
-      const productPrices = prices.data.filter(
-        (price) => 
-          typeof price.product === 'string' 
-            ? price.product === product.id 
-            : price.product.id === product.id
-      );
+    // Combine products with their prices, only include products with active prices
+    const productsWithPrices = products.data
+      .map((product) => {
+        const productPrices = prices.data.filter(
+          (price) => 
+            typeof price.product === 'string' 
+              ? price.product === product.id 
+              : price.product.id === product.id
+        );
 
-      // Get the default price or first price
-      const defaultPrice = productPrices.find(
-        (p) => p.id === product.default_price
-      ) || productPrices[0];
+        // Only include products that have at least one active price
+        if (productPrices.length === 0) {
+          return null;
+        }
 
-      return {
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        images: product.images,
-        metadata: product.metadata,
-        prices: productPrices.map((price) => ({
-          id: price.id,
-          unit_amount: price.unit_amount,
-          currency: price.currency,
-          recurring: price.recurring,
-          type: price.type,
-        })),
-        defaultPrice: defaultPrice ? {
-          id: defaultPrice.id,
-          unit_amount: defaultPrice.unit_amount,
-          currency: defaultPrice.currency,
-          recurring: defaultPrice.recurring,
-          type: defaultPrice.type,
-        } : null,
-      };
-    });
+        // Get the default price or first price
+        const defaultPrice = productPrices.find(
+          (p) => p.id === product.default_price
+        ) || productPrices[0];
+
+        return {
+          id: product.id,
+          name: product.name,
+          description: product.description,
+          images: product.images,
+          metadata: product.metadata,
+          prices: productPrices.map((price) => ({
+            id: price.id,
+            unit_amount: price.unit_amount,
+            currency: price.currency,
+            recurring: price.recurring,
+            type: price.type,
+          })),
+          defaultPrice: defaultPrice ? {
+            id: defaultPrice.id,
+            unit_amount: defaultPrice.unit_amount,
+            currency: defaultPrice.currency,
+            recurring: defaultPrice.recurring,
+            type: defaultPrice.type,
+          } : null,
+        };
+      })
+      .filter((product) => product !== null) as Array<{
+        id: string;
+        name: string;
+        description: string | null;
+        images: string[];
+        metadata: Stripe.Metadata;
+        prices: Array<{
+          id: string;
+          unit_amount: number | null;
+          currency: string;
+          recurring: Stripe.Price.Recurring | null;
+          type: string;
+        }>;
+        defaultPrice: {
+          id: string;
+          unit_amount: number | null;
+          currency: string;
+          recurring: Stripe.Price.Recurring | null;
+          type: string;
+        } | null;
+      }>;
 
     // Sort by metadata.order if available, otherwise by creation date
     productsWithPrices.sort((a, b) => {
