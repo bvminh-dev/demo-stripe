@@ -74,7 +74,7 @@ export default function SetupPage() {
     setIsSaved(false);
   };
 
-  const handleLocaleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLocaleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMetadata((prev) => ({ ...prev, locale: e.target.value }));
     setIsSaved(false);
   };
@@ -201,24 +201,60 @@ export default function SetupPage() {
               >
                 Locale
               </label>
-              <input
+              <select
                 id="locale"
-                type="text"
                 value={metadata.locale}
                 onChange={handleLocaleChange}
-                placeholder="Enter locale code (e.g., en, th, vi, ja, ko, zh, fr, de, es, pt, it, nl, pl, ru, id, ms, tr, auto)"
                 className="w-full px-6 py-4 rounded-2xl border-2 border-gray-200 focus:border-primary-600 focus:outline-none transition-all duration-300 text-gray-900 bg-white/90 backdrop-blur-sm text-lg font-semibold"
-              />
+              >
+                <option value="auto">Auto (Browser Default)</option>
+                <option value="bg">Bulgarian (Български)</option>
+                <option value="cs">Czech (Čeština)</option>
+                <option value="da">Danish (Dansk)</option>
+                <option value="de">German (Deutsch)</option>
+                <option value="el">Greek (Ελληνικά)</option>
+                <option value="en">English</option>
+                <option value="en-GB">English (United Kingdom)</option>
+                <option value="es">Spanish (Español)</option>
+                <option value="es-419">Spanish (Latin America)</option>
+                <option value="et">Estonian (Eesti)</option>
+                <option value="fi">Finnish (Suomi)</option>
+                <option value="fil">Filipino</option>
+                <option value="fr">French (Français)</option>
+                <option value="fr-CA">French (Canada)</option>
+                <option value="hr">Croatian (Hrvatski)</option>
+                <option value="hu">Hungarian (Magyar)</option>
+                <option value="id">Indonesian (Bahasa Indonesia)</option>
+                <option value="it">Italian (Italiano)</option>
+                <option value="ja">Japanese (日本語)</option>
+                <option value="ko">Korean (한국어)</option>
+                <option value="lt">Lithuanian (Lietuvių)</option>
+                <option value="lv">Latvian (Latviešu)</option>
+                <option value="ms">Malay (Bahasa Melayu)</option>
+                <option value="mt">Maltese (Malti)</option>
+                <option value="nb">Norwegian Bokmål (Norsk Bokmål)</option>
+                <option value="nl">Dutch (Nederlands)</option>
+                <option value="pl">Polish (Polski)</option>
+                <option value="pt">Portuguese (Português)</option>
+                <option value="pt-BR">Portuguese (Brazil)</option>
+                <option value="ro">Romanian (Română)</option>
+                <option value="ru">Russian (Русский)</option>
+                <option value="sk">Slovak (Slovenčina)</option>
+                <option value="sl">Slovenian (Slovenščina)</option>
+                <option value="sv">Swedish (Svenska)</option>
+                <option value="th">Thai (ไทย)</option>
+                <option value="tr">Turkish (Türkçe)</option>
+                <option value="vi">Vietnamese (Tiếng Việt)</option>
+                <option value="zh">Chinese (中文)</option>
+                <option value="zh-HK">Chinese (Hong Kong)</option>
+                <option value="zh-TW">Chinese (Traditional)</option>
+              </select>
               {metadata.locale && (
                 <p className="mt-2 text-sm text-gray-500">
-                  Current locale:{" "}
+                  Selected locale:{" "}
                   <span className="font-semibold">{metadata.locale}</span>
                 </p>
               )}
-              <p className="mt-2 text-xs text-gray-400">
-                Common values: auto, en, th, vi, ja, ko, zh, zh-TW, fr, de, es,
-                pt, pt-BR, it, nl, pl, ru, id, ms, tr
-              </p>
             </div>
 
             {/* Save Button */}
